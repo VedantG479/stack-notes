@@ -9,6 +9,7 @@ import WriteArticlePage from './pages/WriteArticlePage'
 function App() {
   return (
     <>
+      <HomePage/>
     </>
   )
 }

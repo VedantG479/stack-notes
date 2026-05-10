@@ -40,16 +40,16 @@ class UserDatabaseService{
         }
     }
 
-    async getUsers(searchQuery = ""){
+    async getUsers(searchQuery){
         try{
             const results = await this.tablesDB.listRows(
                 config.appwriteDatabaseId, 
                 config.appwriteUsersTableId, 
-                Query.and([
+                [
                     Query.contains("username", searchQuery),
                     Query.orderDesc("number_of_posts"),
                     Query.limit(10)
-                ])
+                ]
             )
             return results
         }
