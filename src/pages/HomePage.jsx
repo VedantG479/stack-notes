@@ -67,7 +67,10 @@ export default function HomePage() {
                     </button>
                     {!isAuthenticated ? 
                     <button className="hover:text-[#FF5C8A] transition-colors"
-                        onClick={() => navigate('/login')}>
+                        onClick={() => navigate('/login', {
+                                            state: { from: location.pathname }
+                                        }
+                        )}>
                         Login / Signup
                     </button> : 
                     <button className="hover:text-[#FF5C8A] transition-colors"

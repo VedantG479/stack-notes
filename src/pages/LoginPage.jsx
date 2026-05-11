@@ -4,7 +4,7 @@ import auth from "../appwrite/auth"
 import userDB from "../appwrite/user"
 import { useDispatch } from "react-redux"
 import { login } from "../store/authSlice"
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 
 export default function LoginPage() {
     const [isSignup, setIsSignup] = useState(false)
@@ -12,6 +12,9 @@ export default function LoginPage() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const location = useLocation();
+    const from = location.state?.from || "/";
 
     const submitHandler = async (data) => {
         try {
@@ -29,7 +32,7 @@ export default function LoginPage() {
 
             const user = await auth.getCurrentUser()
             if (user) dispatch(login(user.$id))
-            navigate('/')
+            navigate(from)
         }
         catch (error) {
             console.log(isSignup ? 'error creating account: ' : 'error logging in account: ', error)
@@ -42,7 +45,7 @@ export default function LoginPage() {
                 {/* Header */}
                 <section className="mb-20 flex items-center">
                     <button className="text-[12px] text-[#727782] hover:text-[#FF5C8A] transition-colors"
-                        onClick={() => navigate('/')}>
+                        onClick={() => navigate(from)}>
                         ← back
                     </button>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B] ml-16">

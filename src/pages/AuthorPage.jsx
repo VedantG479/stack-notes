@@ -1,77 +1,67 @@
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router"
+import userDB from "../appwrite/user"
+import articleDB from "../appwrite/article"
+import formatDate from "../utils/formatDate"
+import ArticleList from "../components/ArticleList"
+
 export default function AuthorPage() {
+    const { authorId } = useParams()
+    const [author, setAuthor] = useState([])
+    const [authorArticles, setAuthorArticles] = useState([])
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        userDB.getUser(authorId)
+            .then((user) => {
+                if (user) setAuthor(user)
+            })
+        articleDB.getUserArticles(authorId)
+            .then((articles) => {
+                if (articles) setAuthorArticles(articles.rows)
+            })
+    }, [authorId])
+
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
-            <div className="max-w-[760px] pl-24 pt-28 pb-24">
+            <div className="fixed top-0 left-0 w-full bg-[#0B0D14] z-50">
+                <div className="max-w-[760px] pl-24 pt-8 pb-4">
+                    <button
+                        className="text-[12px] text-[#727782] hover:text-[#FF5C8A] transition-colors"
+                        onClick={() => navigate(`/`)}>
+                        ← Home
+                    </button>
+                </div>
+            </div>
+
+            <div className="max-w-[760px] pl-24 pt-24 pb-24">
                 {/* Author Header */}
-                <section className="mb-16">
+                <section className="mb-16 mt-4">
                     <h1 className="text-[16px] tracking-[0.03em] mb-4">
-                        Vedant Garg
+                        {author.username}
                     </h1>
                     <p className="text-[13px] leading-[1.8] text-[#727782] max-w-[640px]">
-                        Writing about distributed systems, postgres internals,
-                        infrastructure engineering, linux environments and the
-                        quiet complexity behind scalable software systems.
+                        {author.intro}
                     </p>
                     <div className="flex items-center gap-8 mt-8 text-[12px] text-[#727782]">
-                        <button className="hover:text-[#FF5C8A] transition-colors">
+                        {author.github && <a href={author.github} target="_blank" rel="noopener noreferrer" className="hover:text-[#FF5C8A] transition-colors">
                             github
-                        </button>
-                        <button className="hover:text-[#FF5C8A] transition-colors">
+                        </a>}
+                        {author.twitter && <a href={author.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-[#FF5C8A] transition-colors">
                             twitter
-                        </button>
-                        <button className="hover:text-[#FF5C8A] transition-colors">
-                            mail
-                        </button>
+                        </a>}
+                        {author.email && <a href={author.email} target="_blank" rel="noopener noreferrer" className="hover:text-[#FF5C8A] transition-colors">
+                            email
+                        </a>}
                     </div>
                 </section>
 
-                {/* 2026 */}
-                <section className="mb-16">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B] mb-8 underline underline-offset-6">
-                        2026
-                    </p>
-                    <div className="space-y-5">
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Backing up with restic in append-only mode on rsync.net
-                        </button>
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Deploying with SSH
-                        </button>
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Disabling Google&apos;s AI Overview
-                        </button>
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Building infrastructure that survives failure
-                        </button>
-                    </div>
-                </section>
-
-                {/* 2025 */}
-                <section className="mb-16">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B] mb-8 underline underline-offset-6">
-                        2025
-                    </p>
-                    <div className="space-y-5">
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Why postgres indexing still matters
-                        </button>
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Understanding repeatable reads properly
-                        </button>
-                        <button className="block text-left text-[14px] leading-[1.7] text-[#FF5C8A] hover:underline underline-offset-4">
-                            Practical caching with redis
-                        </button>
-                    </div>
-                </section>
+                <ArticleList authorArticles={authorArticles}/>
 
                 {/* Footer */}
-                <footer className="pt-8 border-t border-[#171B26] flex items-center gap-8 text-[12px] text-[#70757E]">
-                    <button className="hover:text-[#FF5C8A] transition-colors">
-                        Home
-                    </button>
-                    <button className="hover:text-[#FF5C8A] transition-colors">
-                        Contact
-                    </button>
+                <footer className="pt-4 border-t border-[#171B26] text-[12px] text-[#70757E]">
+                    <p>Joined on {formatDate(author.$createdAt)}</p>
                 </footer>
             </div>
         </main>

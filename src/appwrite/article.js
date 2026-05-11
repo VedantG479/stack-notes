@@ -44,10 +44,11 @@ class ArticleDatabaseService{
             const articles = this.tablesDB.listRows(
                 config.appwriteDatabaseId, 
                 config.appwriteArticlesTableId,
-                Query.and([
+                [
                     Query.equal("authorId", userId), 
-                    Query.select(['title', '$id'])
-                ])
+                    Query.select(['title', '$id']),
+                    Query.orderDesc('$updatedAt')
+                ]
             )
             return articles
         }
@@ -86,7 +87,7 @@ class ArticleDatabaseService{
         )
     }
 
-    async updateLikeCountArticle(articleId, newCount){
+    async toggleLikeArticle(articleId, newCount){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 
             config.appwriteArticlesTableId, 

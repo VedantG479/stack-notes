@@ -58,7 +58,7 @@ class UserDatabaseService{
         }
     }
 
-    async postCountUpdate(userId, newPostCount){
+    async updatePostsCount(userId, newPostCount){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 
             config.appwriteUsersTableId, 
@@ -69,15 +69,62 @@ class UserDatabaseService{
         )
     }
 
-    async likeCountUpdate(userId, newLikeCount){
-        return this.tablesDB.updateRow(
-            config.appwriteDatabaseId, 
-            config.appwriteUsersTableId, 
-            userId, 
-            {
-                "total_likes": newLikeCount
+    async checkIfArticleLiked(userId, articleId){
+        try{
+            const user = await this.tablesDB.getRow(
+                config.appwriteDatabaseId, 
+                config.appwriteUsersTableId, 
+                userId
+            )
+            user.liked_articles.forEach((likedArticle) => {
+                if(likedArticle === articleId) return true
+            })
+            return false
+        }
+        catch(error){
+            return false
+        }
+    }
+
+    async likeArticle(userId, articleId){
+        try{
+            const user = await this.getUser(userId)
+            if(user){
+                const likedArticles = user.liked_articles
+                likedArticles.push(articleId)
+                await this.tablesDB.updateRow(
+                    config.appwriteDatabaseId, 
+                    config.appwriteUsersTableId, 
+                    userId, 
+                    {
+                        "liked_articles": likedArticles
+                    }
+                )
             }
-        )
+        }
+        catch(error){
+            throw error
+        }
+    }
+
+    async unlikeArticle(userId, articleId){
+        try{
+            const user = await this.getUser(userId)
+            if(user){
+                const likedArticles = user.liked_articles.filter((article) => article.$id != articleId)
+                await this.tablesDB.updateRow(
+                    config.appwriteDatabaseId, 
+                    config.appwriteUsersTableId, 
+                    userId, 
+                    {
+                        "liked_articles": likedArticles
+                    }
+                )
+            }    
+        }
+        catch(error){
+            throw error
+        }
     }
 }
 
