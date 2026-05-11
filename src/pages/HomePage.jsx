@@ -2,11 +2,20 @@ import { useEffect, useState } from "react"
 import userDB from "../appwrite/user"
 import Author from "../components/Author"
 import SearchAuthor from "../components/SearchAuthor"
+import { useNavigate } from "react-router"
+import { useDispatch, useSelector } from "react-redux"
+import auth from "../appwrite/auth"
+import { logout } from "../store/authSlice"
 
 export default function HomePage() {
     const [authorList, setAuthorList] = useState([])
     const [searchQuery, setSearchQuery] = useState('')
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const {isAuthenticated, userId} = useSelector(state => state.auth)
+
+    //add not equals for logged in user in getUsers query parameter, if the user is logged in
     const fetchAuthors = (search = '') => {
         setAuthorList([])
         if(search.length < 3)   search = ''  
@@ -17,6 +26,16 @@ export default function HomePage() {
             .catch((error) => {
                 console.log('error fetching authors: ', error)
                 setAuthorList([])
+            })
+    }
+
+    const logoutHandler = () => {
+        auth.logoutAccount()
+            .then(() => {
+                dispatch(logout())
+            })
+            .catch((error) => {
+                console.log('error logging out: ', error)
             })
     }
 
@@ -38,15 +57,23 @@ export default function HomePage() {
                 </section>
 
                 <footer className="mt-32 pt-8 border-t border-[#171B26] flex items-center gap-8 text-[12px] text-[#70757E]">
-                    <button className="hover:text-[#FF5C8A] transition-colors">
+                    {isAuthenticated && 
+                    <button className="hover:text-[#FF5C8A] transition-colors"
+                        onClick={() => navigate(`/author/:${userId}`)}>
                         Me
-                    </button>
+                    </button>}
                     <button className="hover:text-[#FF5C8A] transition-colors">
                         Contact Us
                     </button>
-                    <button className="hover:text-[#FF5C8A] transition-colors">
+                    {!isAuthenticated ? 
+                    <button className="hover:text-[#FF5C8A] transition-colors"
+                        onClick={() => navigate('/login')}>
                         Login / Signup
-                    </button>
+                    </button> : 
+                    <button className="hover:text-[#FF5C8A] transition-colors"
+                        onClick={logoutHandler}>
+                        Logout
+                    </button>}
                 </footer>
             </div>
         </main>

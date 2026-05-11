@@ -9,15 +9,7 @@ export default function SearchAuthor({searchQuery, setSearchQuery}) {
                 <input
                     type="text"
                     placeholder="search by author..."
-                    className="
-                        w-full
-                        bg-transparent
-                        border-none
-                        outline-none
-                        text-[14px]
-                        text-[#E7E4DF]
-                        placeholder:text-[#4D5462]
-                    "
+                    className="w-full bg-transparent border-none outline-none text-[14px] text-[#E7E4DF] placeholder:text-[#4D5462]"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}/>
             </div>
