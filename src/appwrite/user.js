@@ -10,11 +10,11 @@ class UserDatabaseService{
         this.tablesDB = new TablesDB(this.client)
     }
 
-    async createUser(username, intro, github, twitter, linkedin, email){
+    async createUser(id, username, intro, github, twitter, linkedin, email){
         return this.tablesDB.createRow(
             config.appwriteDatabaseId, 
             config.appwriteUsersTableId, 
-            ID.unique(), 
+            id, 
             {
                 "username": username, 
                 "intro": intro, 

@@ -21,7 +21,7 @@ export default function AuthorPage() {
             .then((articles) => {
                 if (articles) setAuthorArticles(articles.rows)
             })
-    }, [authorId])
+    }, [])
 
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">

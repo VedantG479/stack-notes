@@ -18,11 +18,12 @@ export default function LoginPage() {
 
     const submitHandler = async (data) => {
         try {
-            if (isSignup) {
+            if(isSignup){
                 const { username, intro, email, password, github, twitter, linkedin } = data
 
                 await auth.createAccount(username, email, password)
-                await userDB.createUser(username, intro, github, twitter, linkedin, email)
+                const user = await auth.getCurrentUser()
+                await userDB.createUser(user.$id, username, intro, github, twitter, linkedin, email)
             }
             else {
                 const { email, password } = data

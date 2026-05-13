@@ -59,7 +59,7 @@ export default function HomePage() {
                 <footer className="mt-32 pt-8 border-t border-[#171B26] flex items-center gap-8 text-[12px] text-[#70757E]">
                     {isAuthenticated && 
                     <button className="hover:text-[#FF5C8A] transition-colors"
-                        onClick={() => navigate(`/author/:${userId}`)}>
+                        onClick={() => navigate('/dashboard')}>
                         Me
                     </button>}
                     <button className="hover:text-[#FF5C8A] transition-colors">

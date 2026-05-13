@@ -45,9 +45,8 @@ class ArticleDatabaseService{
                 config.appwriteDatabaseId, 
                 config.appwriteArticlesTableId,
                 [
-                    Query.equal("authorId", userId), 
-                    Query.select(['title', '$id']),
-                    Query.orderDesc('$updatedAt')
+                    Query.equal("authorId", userId),
+                    Query.orderDesc('$createdAt')
                 ]
             )
             return articles

@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     element: <WriteArticlePage/>
   }, 
   {
+    path: '/write/:articleId', 
+    element: <WriteArticlePage/>
+  },
+  {
     path: '/dashboard', 
     element: <DashboardPage/>
   }

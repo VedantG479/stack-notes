@@ -1,32 +1,60 @@
+import { useCallback, useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import userDB from "../appwrite/user"
+import { DashboardListItemBig, DashboardListItemSmall } from "../components/DashboardListItem"
+import { useNavigate } from "react-router"
+import articleDB from "../appwrite/article"
+
 export default function DashboardPage() {
+    const { userId } = useSelector(state => state.auth)
+    const [user, setUser] = useState([])
+    const [articles, setArticles] = useState([])
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        userDB.getUser(userId)
+            .then((tempUser) => {
+                if(tempUser) setUser(tempUser)
+            })
+        articleDB.getUserArticles(userId)
+            .then((tempArticles) => {
+                if(tempArticles) setArticles(tempArticles.rows)
+            })
+    }, [])
+
+    useEffect(() => {
+        articleDB.getUserArticles(userId)
+            .then((tempArticles) => {
+                if(tempArticles) setArticles(tempArticles.rows)
+            })
+    }, [articles])
+
+    const deleteArticleHandler = useCallback((articleId) => {
+        let newArticles = articles.filter((article) => article.$id !== articleId)
+        try{
+            articleDB.deleteArticle(articleId)
+                .then(() => setArticles(newArticles))
+        }
+        catch(error){
+            console.log('error deleting article: ', error)
+        }
+    }, [setArticles])
+
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
-            <div className="max-w-[1400px] pl-24 pr-24 pt-28 pb-24">
+            <div className="w-full px-6 md:px-10 lg:px-24 pt-20 md:pt-28 pb-24">
                 {/* Header */}
-                <section className="mb-16">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B] mb-5">
-                        Dashboard
+                <section className="mb-14">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B]">
+                        Dashboard - {user.username}
                     </p>
-                    <h1 className="text-[15px] tracking-[0.03em] text-[#C8C4BE]">
-                        Vedant Garg
-                    </h1>
                 </section>
 
-                {/* Table */}
-                <div className="border border-[#171B26]">
+                <div className="hidden lg:block border border-[#171B26] overflow-hidden">
                     {/* Header */}
-                    <div
-                        className="
-                            grid
-                            grid-cols-[500px_120px_100px_100px_120px_260px]
-                            h-[64px]
-                            border-b
-                            border-[#171B26]
-                            text-[11px]
-                            uppercase
-                            tracking-[0.18em]
-                            text-[#6C717B]">
-                        <div className="flex items-center px-6">
+                    <div className="grid grid-cols-[4fr_1fr_1fr_1fr_1fr_2fr] h-[64px] border-b border-[#171B26] text-[11px] uppercase tracking-[0.18em] text-[#6C717B]">
+                        <div className="flex items-center px-8">
                             Title
                         </div>
                         <div className="flex items-center justify-center">
@@ -45,108 +73,27 @@ export default function DashboardPage() {
                             Actions
                         </div>
                     </div>
+                    {
+                        articles.map((article) => (
+                            <DashboardListItemBig key={article.$id} article={article} deleteArticleHandler={deleteArticleHandler}/>
+                        ))
+                    }
+                </div>
 
-                    {/* Row */}
-                    <div
-                        className="
-                            grid
-                            grid-cols-[500px_120px_100px_100px_120px_260px]
-                            h-[82px]
-                            border-b
-                            border-[#131722]
-                            text-[13px]">
-                        <div className="flex items-center px-6 overflow-hidden">
-                            <button
-                                className="
-                                    text-left
-                                    text-[#FF5C8A]
-                                    hover:underline
-                                    underline-offset-4
-                                    whitespace-nowrap
-                                    overflow-hidden
-                                    text-ellipsis">
-                                Backing up with restic in append-only mode
-                            </button>
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#B5B2AD]">
-                            Published
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            12.4k
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            4.1k
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            May 10
-                        </div>
-                        <div className="flex items-center justify-center gap-5 whitespace-nowrap text-[#727782]">
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                edit
-                            </button>
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                unpublish
-                            </button>
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                delete
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Row */}
-                    <div
-                        className="
-                            grid
-                            grid-cols-[500px_120px_100px_100px_120px_260px]
-                            h-[82px]
-                            border-b
-                            border-[#131722]
-                            text-[13px]">
-                        <div className="flex items-center px-6 overflow-hidden">
-                            <button
-                                className="
-                                    text-left
-                                    text-[#FF5C8A]
-                                    hover:underline
-                                    underline-offset-4
-                                    whitespace-nowrap
-                                    overflow-hidden
-                                    text-ellipsis">
-                                Deploying with SSH
-                            </button>
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#B5B2AD]">
-                            Draft
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            —
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            —
-                        </div>
-                        <div className="flex items-center justify-center whitespace-nowrap text-[#727782]">
-                            Apr 28
-                        </div>
-                        <div className="flex items-center justify-center gap-5 whitespace-nowrap text-[#727782]">
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                edit
-                            </button>
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                publish
-                            </button>
-                            <button className="hover:text-[#FF5C8A] transition-colors">
-                                delete
-                            </button>
-                        </div>
-                    </div>
+                <div className="lg:hidden border border-[#171B26]">
+                    {
+                        articles.map((article) => (
+                            <DashboardListItemSmall key={article.$id} article={article} deleteArticleHandler={deleteArticleHandler}/>
+                        ))
+                    }
                 </div>
 
                 {/* Footer */}
                 <footer className="mt-24 pt-8 border-t border-[#171B26] flex items-center gap-8 text-[12px] text-[#70757E]">
-                    <button className="hover:text-[#FF5C8A] transition-colors">
+                    <button className="hover:text-[#FF5C8A] transition-colors" onClick={() => navigate('/write')}>
                         Write Article
                     </button>
-                    <button className="hover:text-[#FF5C8A] transition-colors">
+                    <button className="hover:text-[#FF5C8A] transition-colors" onClick={() => navigate('/')}>
                         Home
                     </button>
                 </footer>
