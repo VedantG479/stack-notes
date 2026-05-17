@@ -23,13 +23,6 @@ export default function DashboardPage() {
             })
     }, [])
 
-    useEffect(() => {
-        articleDB.getUserArticles(userId)
-            .then((tempArticles) => {
-                if(tempArticles) setArticles(tempArticles.rows)
-            })
-    }, [articles])
-
     const deleteArticleHandler = useCallback((articleId) => {
         let newArticles = articles.filter((article) => article.$id !== articleId)
         try{
@@ -39,7 +32,7 @@ export default function DashboardPage() {
         catch(error){
             console.log('error deleting article: ', error)
         }
-    }, [setArticles])
+    }, [articles])
 
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">

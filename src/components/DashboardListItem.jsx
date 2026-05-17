@@ -3,10 +3,10 @@ import formatDate from "../utils/formatDate"
 import { useState } from "react"
 import articleDB from "../appwrite/article"
 
-const statusHandler = (article, setArticleStatus) => {
+const statusHandler = async (article, setArticleStatus) => {
     const newStatus = article.status == 'published' ? 'draft' : 'published'
     setArticleStatus(newStatus)
-    articleDB.toggleArticleStatus(article.$id, newStatus)
+    await articleDB.toggleArticleStatus(article.$id, newStatus)
 }
 
 export function DashboardListItemBig({article, deleteArticleHandler}) {
@@ -17,7 +17,8 @@ export function DashboardListItemBig({article, deleteArticleHandler}) {
     return (
         <div className="grid grid-cols-[4fr_1fr_1fr_1fr_1fr_2fr] h-[82px] border-b border-[#131722] text-[13px]">
             <div className="flex items-center min-w-0 px-8">
-                <button className="truncate text-left w-full text-[#FF5C8A] hover:underline underline-offset-4">
+                <button className="truncate text-left w-full text-[#FF5C8A] hover:underline underline-offset-4"
+                    onClick={() => navigate(`/write/${articleId}`)}>
                     {article.title}
                 </button>
             </div>
@@ -58,7 +59,8 @@ export function DashboardListItemSmall({article, deleteArticleHandler}) {
 
     return (
         <div className="border-b border-[#171B26] px-5 py-5">
-            <button className="text-left text-[15px] leading-relaxed text-[#FF5C8A] hover:underline underline-offset-4">
+            <button className="text-left text-[15px] leading-relaxed text-[#FF5C8A] hover:underline underline-offset-4"
+                onClick={() => navigate(`/write/${articleId}`)}>
                 {article.title}
             </button>
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-[#727782]">

@@ -25,6 +25,20 @@ class ArticleDatabaseService{
         )
     }
 
+    async updateArticle(articleId, title, content, status, topic){
+        return this.tablesDB.updateRow(
+            config.appwriteDatabaseId, 
+            config.appwriteArticlesTableId, 
+            articleId, 
+            {
+                "title": title, 
+                "content": content, 
+                "status": status, 
+                "topic": topic
+            }
+        )
+    }
+
     async getArticle(articleId){
         try{
             const article = this.tablesDB.getRow(
