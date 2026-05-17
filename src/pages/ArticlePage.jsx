@@ -4,6 +4,7 @@ import articleDB from "../appwrite/article"
 import formatDate from "../utils/formatDate"
 import userDB from "../appwrite/user"
 import { useSelector } from "react-redux"
+import renderEditorContent from "../utils/renderEditorContent"
 
 export default function ArticlePage() {
     const { articleId } = useParams()
@@ -11,43 +12,43 @@ export default function ArticlePage() {
     const [author, setAuthor] = useState([])
     const [articleAlreadyLiked, setArticleAlreadyLiked] = useState(false)
     const [likeCount, setLikeCount] = useState(0)
-    const {isAuthenticated, userId} = useSelector(state => state.auth)
+    const { isAuthenticated, userId } = useSelector(state => state.auth)
 
     const navigate = useNavigate()
     useEffect(() => {
-        const fetchData = async() => {
+        const fetchData = async () => {
             const tempArticle = await articleDB.getArticle(articleId)
             setArticle(tempArticle)
             setLikeCount(tempArticle.likes)
-
-            if(isAuthenticated){
+            
+            if (isAuthenticated) {
                 const isArticleLiked = await userDB.checkIfArticleLiked(userId, articleId)
                 setArticleAlreadyLiked(isArticleLiked)
                 await articleDB.updateViewCountArticle(articleId, tempArticle.views + 1)
             }
-            
+
             const tempAuthor = await userDB.getUser(tempArticle.authorId)
-            if(tempAuthor)    setAuthor(tempAuthor)
+            if (tempAuthor) setAuthor(tempAuthor)
         }
         fetchData()
     }, [articleId])
 
     const toggleLikeArticleHandler = async () => {
-        try{
-            if(articleAlreadyLiked){
+        try {
+            if (articleAlreadyLiked) {
                 await articleDB.toggleLikeArticle(articleId, article.likes - 1)
                 await userDB.unlikeArticle(userId, articleId)
                 setArticleAlreadyLiked(false)
                 setLikeCount(prv => prv - 1)
             }
-            else{
+            else {
                 await articleDB.toggleLikeArticle(articleId, article.likes + 1)
                 await userDB.likeArticle(userId, articleId)
                 setArticleAlreadyLiked(true)
                 setLikeCount(prv => prv + 1)
             }
         }
-        catch(error){
+        catch (error) {
             console.log(`error ${articleAlreadyLiked ? 'unliking' : 'liking'} post: `, error)
         }
     }
@@ -84,9 +85,12 @@ export default function ArticlePage() {
 
                 {/* Content */}
                 <article className="space-y-10 text-[14px] leading-[2] text-[#C8C5C0]">
-                    <p>
-                        {article.content}
-                    </p>
+                    <section
+                        className="prose prose-invert max-w-none text-[#D3D0CB]"
+                        dangerouslySetInnerHTML={{
+                            __html: renderEditorContent(article.content)
+                        }}
+                    />
                 </article>
 
                 {/* Footer */}
@@ -95,18 +99,18 @@ export default function ArticlePage() {
                         onClick={() => navigate('/')}>
                         Home
                     </button>
-                    {isAuthenticated ? 
-                    <button className="hover:text-[#FF5C8A] transition-colors"
-                        onClick={toggleLikeArticleHandler}>
-                        {!articleAlreadyLiked ? 'Like' : 'UnLike'}
-                    </button> : 
-                    <button className="hover:text-[#FF5C8A] transition-colors"
-                        onClick={() => navigate('/login', {
-                                            state: { from: location.pathname }
-                                        }
-                        )}>
-                        Login to Like
-                    </button>}
+                    {isAuthenticated ?
+                        <button className="hover:text-[#FF5C8A] transition-colors"
+                            onClick={toggleLikeArticleHandler}>
+                            {!articleAlreadyLiked ? 'Like' : 'UnLike'}
+                        </button> :
+                        <button className="hover:text-[#FF5C8A] transition-colors"
+                            onClick={() => navigate('/login', {
+                                state: { from: location.pathname }
+                            }
+                            )}>
+                            Login to Like
+                        </button>}
                     <button className="hover:text-[#FF5C8A] transition-colors"
                         onClick={() => navigate(`/author/${author.$id}`)}>
                         More from {author.username}

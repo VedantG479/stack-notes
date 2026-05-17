@@ -15,11 +15,10 @@ export default function HomePage() {
     const dispatch = useDispatch()
     const {isAuthenticated, userId} = useSelector(state => state.auth)
 
-    //add not equals for logged in user in getUsers query parameter, if the user is logged in
     const fetchAuthors = (search = '') => {
         setAuthorList([])
         if(search.length < 3)   search = ''  
-        userDB.getUsers(search)
+        userDB.getUsers(search, userId)
             .then((result) => {
                 if(result && result.total > 0)  setAuthorList(result.rows)  
             })

@@ -60,6 +60,7 @@ class ArticleDatabaseService{
                 config.appwriteArticlesTableId,
                 [
                     Query.equal("authorId", userId),
+                    Query.equal("status", "published"),
                     Query.orderDesc('$createdAt')
                 ]
             )
