@@ -1,16 +1,68 @@
-# React + Vite
+# stack-notes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack article publishing platform built with React and Appwrite. Users can write, publish, and manage articles while discovering content from other authors.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Authentication & protected routes
+- Rich text editor (EditorJS)
+- Draft & publish workflow
+- Author profiles
+- Search authors
+- Likes & view tracking
+- Article management dashboard
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React
+- React Router
+- Redux Toolkit
+- Appwrite
+- EditorJS
 
-## Expanding the ESLint configuration
+##  Images
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+<table>
+  <tr>
+    <td width="50%">
+      <img width="1582" height="1035" alt="Image" src="https://github.com/user-attachments/assets/b6e77a24-54c4-4011-95f7-0e262a1b54ac" />
+    </td>
+    <td width="50%">
+      <img width="1582" height="1035" alt="Image" src="https://github.com/user-attachments/assets/7d0041a1-f57c-480f-9ccf-114b7063afce" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img width="1582" height="1035" alt="Image" src="https://github.com/user-attachments/assets/f11e1d1d-a0fe-46cf-90df-83f086d66168" />
+    </td>
+    <td width="50%">
+      <img width="1582" height="1035" alt="Image" src="https://github.com/user-attachments/assets/78f6f934-3d11-4c3a-aeb5-16f2df872063" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img width="1582" height="1035" alt="Image" src="https://github.com/user-attachments/assets/0547a2a1-1c28-4e50-8e44-96f83338b5a6" />
+    </td>
+  </tr>
+</table>
+
+## Setup
+
+```bash
+git clone <repository-url>
+cd stack-notes
+npm install
+npm run dev
+```
+
+## Future Improvements
+
+- Comments
+- Author follows
+- Bookmarks
+- Trending feed
+- Tags
+
+## License
+
+For learning and portfolio purposes.
