@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import WriteArticlePage from './pages/WriteArticlePage'
+import ProtectedLayout from './ProtectedLayout'
 
 const router = createBrowserRouter([
   {
@@ -25,27 +26,24 @@ const router = createBrowserRouter([
     element: <AuthorPage/>
   }, 
   {
-    path: '/write', 
-    element: <WriteArticlePage/>
-  }, 
-  {
-    path: '/write/:articleId', 
-    element: <WriteArticlePage/>
-  },
-  {
-    path: '/dashboard', 
-    element: <DashboardPage/>
+    element: <ProtectedLayout/>,
+    children: [{
+      path: '/write', 
+      element: <WriteArticlePage/>
+    }, 
+    {
+      path: '/write/:articleId', 
+      element: <WriteArticlePage/>
+    },
+    {
+      path: '/dashboard', 
+      element: <DashboardPage/>
+    }]
   }
 ])
 
 function App() {
-  return (
-    <>
-      <RouterProvider router={router}>
-        <Outlet/>
-      </RouterProvider>
-    </>
-  )
+  return <RouterProvider router={router}/>
 }
 
 export default App

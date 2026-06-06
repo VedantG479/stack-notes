@@ -71,6 +71,23 @@ class ArticleDatabaseService{
         }
     }
 
+    async getAllUserArticles(userId){
+        try{
+            const articles = this.tablesDB.listRows(
+                config.appwriteDatabaseId, 
+                config.appwriteArticlesTableId,
+                [
+                    Query.equal("authorId", userId),
+                    Query.orderDesc('$createdAt')
+                ]
+            )
+            return articles
+        }
+        catch(error){
+            return null
+        }
+    }
+
     async toggleArticleStatus(articleId, newStatus){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 

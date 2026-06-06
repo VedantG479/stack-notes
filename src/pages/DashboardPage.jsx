@@ -17,7 +17,7 @@ export default function DashboardPage() {
             .then((tempUser) => {
                 if(tempUser) setUser(tempUser)
             })
-        articleDB.getUserArticles(userId)
+        articleDB.getAllUserArticles(userId)
             .then((tempArticles) => {
                 if(tempArticles) setArticles(tempArticles.rows)
             })

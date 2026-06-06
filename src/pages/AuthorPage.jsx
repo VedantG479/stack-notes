@@ -51,9 +51,9 @@ export default function AuthorPage() {
                         {author.twitter && <a href={author.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-[#FF5C8A] transition-colors">
                             twitter
                         </a>}
-                        {author.email && <a href={author.email} target="_blank" rel="noopener noreferrer" className="hover:text-[#FF5C8A] transition-colors">
+                        {author.email && <button onClick={() => window.location.href = `mailto:${author.email}`} className="hover:text-[#FF5C8A] transition-colors">
                             email
-                        </a>}
+                        </button>}
                     </div>
                 </section>
 

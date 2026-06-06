@@ -61,7 +61,7 @@ export default function HomePage() {
                         onClick={() => navigate('/dashboard')}>
                         Me
                     </button>}
-                    <button className="hover:text-[#FF5C8A] transition-colors">
+                    <button className="hover:text-[#FF5C8A] transition-colors" onClick={() => window.location.href = 'mailto:vedantgarg1157@gmail.com'}>
                         Contact Us
                     </button>
                     {!isAuthenticated ? 

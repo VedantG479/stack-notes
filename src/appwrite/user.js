@@ -80,10 +80,7 @@ class UserDatabaseService{
                 config.appwriteUsersTableId, 
                 userId
             )
-            user.liked_articles.forEach((likedArticle) => {
-                if(likedArticle === articleId) return true
-            })
-            return false
+            return user.liked_articles.includes(articleId)
         }
         catch(error){
             return false
