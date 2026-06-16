@@ -44,7 +44,6 @@ class UserDatabaseService{
         try{
             const queries = [
                 Query.contains("username", searchQuery),
-            
                 Query.orderDesc("number_of_posts"),
                 Query.limit(10)
             ]
@@ -62,6 +61,7 @@ class UserDatabaseService{
         }
     }
 
+    //ONLY PUBLISHED POSTS COUNT
     async updatePostsCount(userId, newPostCount){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 
@@ -71,61 +71,6 @@ class UserDatabaseService{
                 "number_of_posts": newPostCount
             }
         )
-    }
-
-    async checkIfArticleLiked(userId, articleId){
-        try{
-            const user = await this.tablesDB.getRow(
-                config.appwriteDatabaseId, 
-                config.appwriteUsersTableId, 
-                userId
-            )
-            return user.liked_articles.includes(articleId)
-        }
-        catch(error){
-            return false
-        }
-    }
-
-    async likeArticle(userId, articleId){
-        try{
-            const user = await this.getUser(userId)
-            if(user){
-                const likedArticles = user.liked_articles
-                likedArticles.push(articleId)
-                await this.tablesDB.updateRow(
-                    config.appwriteDatabaseId, 
-                    config.appwriteUsersTableId, 
-                    userId, 
-                    {
-                        "liked_articles": likedArticles
-                    }
-                )
-            }
-        }
-        catch(error){
-            throw error
-        }
-    }
-
-    async unlikeArticle(userId, articleId){
-        try{
-            const user = await this.getUser(userId)
-            if(user){
-                const likedArticles = user.liked_articles.filter((article) => article.$id != articleId)
-                await this.tablesDB.updateRow(
-                    config.appwriteDatabaseId, 
-                    config.appwriteUsersTableId, 
-                    userId, 
-                    {
-                        "liked_articles": likedArticles
-                    }
-                )
-            }    
-        }
-        catch(error){
-            throw error
-        }
     }
 }
 

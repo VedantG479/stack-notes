@@ -107,6 +107,7 @@ class ArticleDatabaseService{
         )
     }
 
+    //UPDATE
     async updateViewCountArticle(articleId, newCount){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 
@@ -114,17 +115,6 @@ class ArticleDatabaseService{
             articleId, 
             {
                 "views": newCount
-            }
-        )
-    }
-
-    async toggleLikeArticle(articleId, newCount){
-        return this.tablesDB.updateRow(
-            config.appwriteDatabaseId, 
-            config.appwriteArticlesTableId, 
-            articleId, 
-            {
-                "likes": newCount
             }
         )
     }
