@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router"
 import formatDate from "../utils/formatDate"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import articleDB from "../appwrite/article"
+import { likesDB } from "../appwrite/likes"
 
 const statusHandler = async (article, setArticleStatus) => {
     const newStatus = article.status == 'published' ? 'draft' : 'published'
@@ -9,10 +10,21 @@ const statusHandler = async (article, setArticleStatus) => {
     await articleDB.toggleArticleStatus(article.$id, newStatus)
 }
 
+const likeCountFetch = async (articleId) => {
+    const likeRecords = await likesDB.getArticleLikeCount(articleId)
+    return likeRecords.total
+}
+
 export function DashboardListItemBig({article, deleteArticleHandler}) {
     const articleId = article.$id
     const [articleStatus, setArticleStatus] = useState(article.status)
+    const [articleLikes, setArticleLikes] = useState(0)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        let count = likeCountFetch(articleId)
+        setArticleLikes(count)
+    })
 
     return (
         <div className="grid grid-cols-[4fr_1fr_1fr_1fr_1fr_2fr] h-[82px] border-b border-[#131722] text-[13px]">
@@ -29,7 +41,7 @@ export function DashboardListItemBig({article, deleteArticleHandler}) {
                 {article.views} 
             </div>
             <div className="flex items-center justify-center text-[#727782]">
-                {article.likes}
+                {articleLikes}
             </div>
             <div className="flex items-center justify-center text-[#727782]">
                 {formatDate(article.$createdAt)}
@@ -55,7 +67,13 @@ export function DashboardListItemBig({article, deleteArticleHandler}) {
 export function DashboardListItemSmall({article, deleteArticleHandler}) {
     const articleId = article.$id
     const [articleStatus, setArticleStatus] = useState(article.status)
+    const [articleLikes, setArticleLikes] = useState(0)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        let count = likeCountFetch(articleId)
+        setArticleLikes(count)
+    })
 
     return (
         <div className="border-b border-[#171B26] px-5 py-5">
@@ -71,7 +89,7 @@ export function DashboardListItemSmall({article, deleteArticleHandler}) {
                     {article.views} views
                 </span>
                 <span>
-                    {article.likes} likes
+                    {articleLikes} likes
                 </span>
                 <span>
                     {formatDate(article.$createdAt)}

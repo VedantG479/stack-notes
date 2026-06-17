@@ -4,6 +4,7 @@ import userDB from "../appwrite/user"
 import { DashboardListItemBig, DashboardListItemSmall } from "../components/DashboardListItem"
 import { useNavigate } from "react-router"
 import articleDB from "../appwrite/article"
+import { likesDB } from "../appwrite/likes"
 
 export default function DashboardPage() {
     const { userId } = useSelector(state => state.auth)
@@ -24,10 +25,13 @@ export default function DashboardPage() {
     }, [])
 
     const deleteArticleHandler = useCallback((articleId) => {
-        let newArticles = articles.filter((article) => article.$id !== articleId)
         try{
             articleDB.deleteArticle(articleId)
-                .then(() => setArticles(newArticles))
+                .then(() => {
+                    let newArticles = articles.filter((article) => article.$id !== articleId)
+                    setArticles(newArticles)
+                    likesDB.deleteArticleLikes(articleId)
+                })
         }
         catch(error){
             console.log('error deleting article: ', error)

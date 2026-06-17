@@ -17,7 +17,7 @@ export default function HomePage() {
 
     const fetchAuthors = (search = '') => {
         setAuthorList([])
-        if(search.length < 3)   search = ''  
+        if(search.length != 0 && search.length < 3)   return
         userDB.getUsers(search, userId)
             .then((result) => {
                 if(result && result.total > 0)  setAuthorList(result.rows)  
@@ -68,7 +68,7 @@ export default function HomePage() {
                     <button className="hover:text-[#FF5C8A] transition-colors"
                         onClick={() => navigate('/login', {
                                             state: { from: location.pathname }
-                                        }
+                                        } //TO NAVIGATE BACK TO PREVIOUS PAGE AFTER LOGGING IN!
                         )}>
                         Login / Signup
                     </button> : 

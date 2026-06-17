@@ -13,9 +13,6 @@ export default function Author({ author }) {
                 <span>
                     {author.number_of_posts} posts
                 </span>
-                <span>
-                    {author.total_likes} likes
-                </span>
             </div>
         </div>
     )

@@ -10,6 +10,22 @@ class LikesDatabaseService{
         this.tablesDB = new TablesDB(this.client)
     }
 
+    async getArticleLikeCount(articleId){
+        try{
+            const likeRecord = await this.tablesDB.getRow(
+                config.appwriteDatabaseId, 
+                config.appwriteLikesTableId, 
+                [
+                    Query.equal("articleId", articleId)
+                ]
+            )
+            return likeRecord
+        }
+        catch(error){
+            throw error
+        }
+    }
+
     async getLikeRecord(userId, articleId){
         try{
             const likeRecord = await this.tablesDB.getRow(
@@ -20,7 +36,6 @@ class LikesDatabaseService{
                     Query.equal("articleId", articleId)
                 ]
             )
-            console.log(likeRecord) //.rows containes result .total contains count
             return likeRecord
         }
         catch(error){
@@ -55,4 +70,17 @@ class LikesDatabaseService{
             throw error
         }
     }
+
+    async deleteArticleLikes(articleId){
+        return await this.tablesDB.deleteRows(
+            config.appwriteDatabaseId, 
+            config.appwriteLikesTableId, 
+            [
+                Query.equal("articleId", articleId)
+            ]
+        )
+    }
 }
+
+const likesDB = new LikesDatabaseService()
+export const likesDB

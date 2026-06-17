@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import articleDB from "../appwrite/article"
 import formatDate from "../utils/formatDate"
 import userDB from "../appwrite/user"
 import { useSelector } from "react-redux"
 import renderEditorContent from "../utils/renderEditorContent"
+import { likesDB } from "../appwrite/likes"
+import { debounce } from "../utils/debounce"
 
 export default function ArticlePage() {
     const { articleId } = useParams()
+    const [articleFound, setArticleFound] = useState(true)
     const [article, setArticle] = useState([])
     const [author, setAuthor] = useState([])
     const [articleAlreadyLiked, setArticleAlreadyLiked] = useState(false)
@@ -18,12 +21,18 @@ export default function ArticlePage() {
     useEffect(() => {
         const fetchData = async () => {
             const tempArticle = await articleDB.getArticle(articleId)
+            if(!tempArticle){
+                setArticleFound(false)
+                return
+            }
             setArticle(tempArticle)
-            setLikeCount(tempArticle.likes)
+
+            const tempArticleLikeCount = await likesDB.getArticleLikeCount(articleId)
+            setLikeCount(tempArticleLikeCount.total)
             
             if (isAuthenticated) {
-                const isArticleLiked = await userDB.checkIfArticleLiked(userId, articleId)
-                setArticleAlreadyLiked(isArticleLiked)
+                const isArticleLiked = await likesDB.getLikeRecord(userId, articleId)
+                setArticleAlreadyLiked(isArticleLiked.total != 0)
                 await articleDB.updateViewCountArticle(articleId, tempArticle.views + 1)
             }
 
@@ -33,27 +42,26 @@ export default function ArticlePage() {
         fetchData()
     }, [articleId])
 
-    const toggleLikeArticleHandler = async () => {
-        try {
-            if (articleAlreadyLiked) {
-                await articleDB.toggleLikeArticle(articleId, article.likes - 1)
-                await userDB.unlikeArticle(userId, articleId)
-                setArticleAlreadyLiked(false)
-                setLikeCount(prv => prv - 1)
+    const syncLikeWithDB = useCallback(
+        debounce(async(isLiked) => {
+            try{
+                if (isLiked)    await likesDB.likeArticle(userId, articleId)
+                else    await likesDB.unLikeArticle(userId, articleId)
             }
-            else {
-                await articleDB.toggleLikeArticle(articleId, article.likes + 1)
-                await userDB.likeArticle(userId, articleId)
-                setArticleAlreadyLiked(true)
-                setLikeCount(prv => prv + 1)
+            catch(error){
+                console.log(`error ${isLiked ? 'unliking' : 'liking'} post: `, error)
             }
-        }
-        catch (error) {
-            console.log(`error ${articleAlreadyLiked ? 'unliking' : 'liking'} post: `, error)
-        }
+        })
+    , [])
+
+    const toggleLikeArticleHandler = () => {
+        const nextLikedState = !articleAlreadyLiked
+        setArticleAlreadyLiked(nextLikedState)
+        setLikeCount(prev => nextLikedState ? prev + 1 : prev - 1)
+        syncLikeWithDB(nextLikedState)
     }
 
-    return (
+    return articleFound ? (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
             <div className="max-w-[760px] pl-24 pt-28 pb-32">
                 {/* Back */}
@@ -116,6 +124,34 @@ export default function ArticlePage() {
                         More from {author.username}
                     </button>
                 </footer>
+            </div>
+        </main>
+    ) : (
+        <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
+            <div className="max-w-[860px] pl-24 pt-28 pb-24">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[#6C717B] mb-8">
+                    Error 404
+                </p>
+
+                <h1 className="text-[42px] leading-[1.1] tracking-[-0.04em] mb-6">
+                    Article not found
+                </h1>
+
+                <p className="text-[15px] leading-[2] text-[#727782] max-w-[500px] mb-16">
+                    The article you are looking for either does not exist,
+                    has been deleted, or you do not have permission to view it.
+                </p>
+
+                <button
+                    onClick={() => navigate(-1)}
+                    className="
+                        text-[13px]
+                        text-[#727782]
+                        hover:text-[#FF5C8A]
+                        transition-colors
+                    ">
+                    ← go back
+                </button>
             </div>
         </main>
     )
