@@ -2,7 +2,7 @@ import { useNavigate } from "react-router"
 import formatDate from "../utils/formatDate"
 import { useEffect, useState } from "react"
 import articleDB from "../appwrite/article"
-import { likesDB } from "../appwrite/likes"
+import likesDB from "../appwrite/likes"
 
 const statusHandler = async (article, setArticleStatus) => {
     const newStatus = article.status == 'published' ? 'draft' : 'published'

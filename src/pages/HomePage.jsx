@@ -9,7 +9,7 @@ import { logout } from "../store/authSlice"
 
 export default function HomePage() {
     const [authorList, setAuthorList] = useState([])
-    const [searchQuery, setSearchQuery] = useState('')
+    const {searchQuery} = useSelector(state => state.search)
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -32,6 +32,7 @@ export default function HomePage() {
         auth.logoutAccount()
             .then(() => {
                 dispatch(logout())
+                location.reload()
             })
             .catch((error) => {
                 console.log('error logging out: ', error)
@@ -45,7 +46,7 @@ export default function HomePage() {
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
             <div className="max-w-[760px] pl-24 pt-28 pb-24">
 
-                <SearchAuthor searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
+                <SearchAuthor searchQuery={searchQuery}/>
 
                 <section className="space-y-20">
                     {

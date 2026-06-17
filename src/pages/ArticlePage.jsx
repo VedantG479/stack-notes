@@ -5,7 +5,7 @@ import formatDate from "../utils/formatDate"
 import userDB from "../appwrite/user"
 import { useSelector } from "react-redux"
 import renderEditorContent from "../utils/renderEditorContent"
-import { likesDB } from "../appwrite/likes"
+import likesDB from "../appwrite/likes"
 import { debounce } from "../utils/debounce"
 
 export default function ArticlePage() {

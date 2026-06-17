@@ -4,7 +4,7 @@ import userDB from "../appwrite/user"
 import { DashboardListItemBig, DashboardListItemSmall } from "../components/DashboardListItem"
 import { useNavigate } from "react-router"
 import articleDB from "../appwrite/article"
-import { likesDB } from "../appwrite/likes"
+import likesDB from "../appwrite/likes"
 
 export default function DashboardPage() {
     const { userId } = useSelector(state => state.auth)

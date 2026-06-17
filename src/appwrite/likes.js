@@ -12,7 +12,7 @@ class LikesDatabaseService{
 
     async getArticleLikeCount(articleId){
         try{
-            const likeRecord = await this.tablesDB.getRow(
+            const likeRecord = await this.tablesDB.listRows(
                 config.appwriteDatabaseId, 
                 config.appwriteLikesTableId, 
                 [
@@ -28,7 +28,7 @@ class LikesDatabaseService{
 
     async getLikeRecord(userId, articleId){
         try{
-            const likeRecord = await this.tablesDB.getRow(
+            const likeRecord = await this.tablesDB.listRows(
                 config.appwriteDatabaseId, 
                 config.appwriteLikesTableId, 
                 [
@@ -62,7 +62,7 @@ class LikesDatabaseService{
                 await this.tablesDB.deleteRow(
                     config.appwriteDatabaseId, 
                     config.appwriteLikesTableId, 
-                    likeRecord.$id
+                    likeRecord.rows[0].$id
                 )
             }
         }
@@ -83,4 +83,4 @@ class LikesDatabaseService{
 }
 
 const likesDB = new LikesDatabaseService()
-export const likesDB
+export default likesDB
