@@ -16,7 +16,7 @@ async function authorPageLoader({params}){
 
         return {
             author, 
-            articles: articlesData?.rows || []
+            authorArticles: articlesData?.rows || []
         }
     }
     catch(error){

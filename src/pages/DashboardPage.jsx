@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import userDB from "../appwrite/user"
 import { DashboardListItemBig, DashboardListItemSmall } from "../components/DashboardListItem"
-import { useLoaderData, useNavigate } from "react-router"
+import { useLoaderData, useNavigate, useRevalidator } from "react-router"
 import articleDB from "../appwrite/article"
 import likesDB from "../appwrite/likes"
 
 export default function DashboardPage() {
     const { userId } = useSelector(state => state.auth)
-    const [user, articlesLoader] = useLoaderData()
-    const [articles, setArticles] = useState(articlesLoader)
+    const revalidator = useRevalidator()
+    const {user, articles} = useLoaderData()
 
     const navigate = useNavigate()
 
@@ -18,14 +18,14 @@ export default function DashboardPage() {
             articleDB.deleteArticle(articleId)
                 .then(() => {
                     let newArticles = articles.filter((article) => article.$id !== articleId)
-                    setArticles(newArticles)
                     likesDB.deleteArticleLikes(articleId)
+                    revalidator.revalidate()
                 })
         }
         catch(error){
             console.log('error deleting article: ', error)
         }
-    }, [articleId, setArticles])
+    }, [revalidator])
 
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">

@@ -11,7 +11,7 @@ export default function ArticlePage() {
     const [articleLiked, setArticleLiked] = useState(articleAlreadyLiked)
     const [likes, setLikes] = useState(likeCount)
 
-    const { userId } = useSelector(state => state.auth)
+    const { isAuthenticated, userId } = useSelector(state => state.auth)
     const navigate = useNavigate()
 
     const syncLikeWithDB = debounce(async (isLiked) => {

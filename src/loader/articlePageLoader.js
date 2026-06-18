@@ -1,6 +1,7 @@
 import articleDB from "../appwrite/article"
 import likesDB from "../appwrite/likes"
 import userDB from "../appwrite/user"
+import store from "../store/store"
 
 async function articlePageLoader({params}){
     const {articleId} = params
@@ -17,7 +18,7 @@ async function articlePageLoader({params}){
         const viewedArticle = localStorage.getItem(articleId)
         if(!viewedArticle){
             localStorage.setItem(articleId, true)
-            articleDB.updateViewCountArticle(articleId, tempArticle.views + 1)
+            articleDB.updateViewCountArticle(articleId, article.views + 1)
         }
 
         let likeCount = await likesDB.getArticleLikeCount(articleId)
@@ -28,7 +29,7 @@ async function articlePageLoader({params}){
             articleAlreadyLiked = articleAlreadyLiked.total != 0
         } 
 
-        const author = await userDB.getUser(tempArticle.authorId)
+        const author = await userDB.getUser(article.authorId)
 
         return {
             articleId, 

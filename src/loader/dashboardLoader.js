@@ -4,7 +4,7 @@ import store from "../store/store"
 
 async function dashboardLoader({params}){
     const state = store.getState()
-    const userId = state.auth
+    const {userId} = state.auth
 
     try{
         const [user, articles] = await Promise.all([
@@ -16,7 +16,7 @@ async function dashboardLoader({params}){
         
         return {
             user, 
-            articlesLoader: articles
+            articles: articles?.rows
         }
     }
     catch(error){

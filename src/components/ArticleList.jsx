@@ -6,7 +6,7 @@ export default function ArticleList({ authorArticles }) {
 
     const openArticle = useCallback((articleId) => {
         navigate(`/${articleId}`)
-    }, [articleId])
+    }, [navigate])
 
     function generateList() {
         let currentYear = null

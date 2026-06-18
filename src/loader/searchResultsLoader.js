@@ -8,9 +8,8 @@ async function searchResultLoader(){
 
     if(searchQuery.length != 0 && searchQuery.length < 3)   return []
     try{
-        let authorList = await userDB.getUsers(searchQuery, userId)
-        authorList = authorList.rows
-        return authorList
+        const authorList = await userDB.getUsers(searchQuery, userId)
+        return authorList.rows
     }
     catch(error){
         return []
