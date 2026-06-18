@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux"
 import articleDB from "../appwrite/article"
 import likesDB from "../appwrite/likes"
 import userDB from "../appwrite/user"
 
 async function articlePageLoader({params}){
     const {articleId} = params
-    const { isAuthenticated, userId } = useSelector(state => state.auth)
+    const state = store.getState()
+    const { isAuthenticated, userId } = state.auth
     let articleAlreadyLiked = false
 
     try{

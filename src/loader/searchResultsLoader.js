@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux"
 import userDB from "../appwrite/user"
+import store from "../store/store"
 
 async function searchResultLoader(){
-    const {searchQuery} = useSelector(state => state.search)
-    const {userId} = useSelector(state => state.auth)
+    const state = store.getState()
+    const {searchQuery} = state.search
+    const {userId} = state.auth
 
     if(searchQuery.length != 0 && searchQuery.length < 3)   return []
     try{

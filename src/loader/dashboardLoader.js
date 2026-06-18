@@ -1,9 +1,10 @@
-import { useSelector } from "react-redux"
 import userDB from "../appwrite/user"
 import articleDB from "../appwrite/article"
+import store from "../store/store"
 
 async function dashboardLoader({params}){
-    const userId = useSelector(state => state.auth)
+    const state = store.getState()
+    const userId = state.auth
 
     try{
         const [user, articles] = await Promise.all([

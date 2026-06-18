@@ -19,7 +19,8 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <HomePage/>, 
-    loader: searchResultLoader
+    loader: searchResultLoader,
+    hydrateFallbackElement: <div>Loading initial application...</div>
   }, 
   {
     path: '/login', 

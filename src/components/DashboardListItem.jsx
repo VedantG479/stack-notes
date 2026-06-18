@@ -1,14 +1,8 @@
 import { useNavigate } from "react-router"
 import formatDate from "../utils/formatDate"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import articleDB from "../appwrite/article"
 import likesDB from "../appwrite/likes"
-
-const statusHandler = useCallback(async (article, setArticleStatus) => {
-    const newStatus = article.status == 'published' ? 'draft' : 'published'
-    setArticleStatus(newStatus)
-    await articleDB.toggleArticleStatus(article.$id, newStatus)
-}, [article, setArticleStatus])
 
 const likeCountFetch = async (articleId) => {
     const likeRecords = await likesDB.getArticleLikeCount(articleId)
@@ -20,6 +14,12 @@ export function DashboardListItemBig({article, deleteArticleHandler}) {
     const [articleStatus, setArticleStatus] = useState(article.status)
     const [articleLikes, setArticleLikes] = useState(0)
     const navigate = useNavigate()
+
+    const statusHandler = useCallback(async (article, setArticleStatus) => {
+        const newStatus = article.status == 'published' ? 'draft' : 'published'
+        setArticleStatus(newStatus)
+        await articleDB.toggleArticleStatus(article.$id, newStatus)
+    }, [article, setArticleStatus])
 
     useEffect(() => {
         let count = likeCountFetch(articleId)
@@ -69,6 +69,12 @@ export function DashboardListItemSmall({article, deleteArticleHandler}) {
     const [articleStatus, setArticleStatus] = useState(article.status)
     const [articleLikes, setArticleLikes] = useState(0)
     const navigate = useNavigate()
+
+    const statusHandler = useCallback(async (article, setArticleStatus) => {
+        const newStatus = article.status == 'published' ? 'draft' : 'published'
+        setArticleStatus(newStatus)
+        await articleDB.toggleArticleStatus(article.$id, newStatus)
+    }, [article, setArticleStatus])
 
     useEffect(() => {
         let count = likeCountFetch(articleId)

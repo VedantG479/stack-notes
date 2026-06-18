@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import Author from "../components/Author"
 import SearchAuthor from "../components/SearchAuthor"
-import { useLoaderData, useNavigate } from "react-router"
+import { useLoaderData, useNavigate, useRevalidator } from "react-router"
 import { useDispatch, useSelector } from "react-redux"
 import auth from "../appwrite/auth"
 import { logout } from "../store/authSlice"
-import searchResultLoader from "../loader/searchResultsLoader"
 
 export default function HomePage() {
-    const [authorList, setAuthorList] = useState(useLoaderData())
+    const authorList = useLoaderData()
+    const revalidator = useRevalidator()
     const {searchQuery} = useSelector(state => state.search)
 
     const navigate = useNavigate()
@@ -26,7 +26,7 @@ export default function HomePage() {
             })
     })
 
-    useEffect(() => setAuthorList(searchResultLoader()), [searchQuery])
+    useEffect(() => {revalidator.revalidate()}, [searchQuery, revalidator])
 
     return (
         <main className="min-h-screen bg-[#0B0D14] text-[#E7E4DF]">
