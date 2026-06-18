@@ -1,7 +1,8 @@
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setQuery } from "../store/searchSlice"
 
-export default function SearchAuthor({searchQuery}) {
+export default function SearchAuthor() {
+    const {searchQuery} = useSelector(state => state.search) 
     const dispatch = useDispatch()
 
     return (

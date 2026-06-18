@@ -4,9 +4,9 @@ import { useNavigate } from "react-router"
 export default function ArticleList({ authorArticles }) {
     const navigate = useNavigate()
 
-    const openArticle = (articleId) => {
+    const openArticle = useCallback((articleId) => {
         navigate(`/${articleId}`)
-    }
+    }, [articleId])
 
     function generateList() {
         let currentYear = null

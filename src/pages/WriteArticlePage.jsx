@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router"
+import { useLoaderData, useNavigate, useParams } from "react-router"
 import ContentEdtior from "../components/ContentEditor"
 import { useCallback, useEffect, useRef, useState } from "react"
 import articleDB from "../appwrite/article"
@@ -8,53 +8,15 @@ import normalizeEditorData from "../utils/normalizeEditorData"
 export default function WriteArticlePage() {
     const editorRef = useRef(null)
     const {articleId} = useParams()
-    const [editorReady, setEditorReady] = useState(false)
     const {userId} = useSelector(state => state.auth)
     const navigate = useNavigate()
 
-    const [savedData, setSavedData] = useState(null)
-    const [currentData, setCurrentData] = useState(null)
-    const [status, setStatus] = useState('draft')
+    const {currentDataLoader, savedDataLoader, editorReadyLoader, statusLoader} = useLoaderData()
+    const [editorReady, setEditorReady] = useState(editorReadyLoader)
+    const [currentData, setCurrentData] = useState(currentDataLoader)
+    const [savedData, setSavedData] = useState(savedDataLoader)
+    const [status, setStatus] = useState(statusLoader)
     const [isDirty, setIsDirty] = useState(false)
-
-    function fillEmpty(){
-        const initialState = {
-            title: '',
-            topic: 'C++',
-            content: {
-                blocks: []
-            }
-        }
-        setCurrentData(initialState)
-        setSavedData(initialState)
-        setEditorReady(true)
-    }
-    
-    useEffect(() => {
-        if(!articleId){
-            fillEmpty()
-            return
-        }
-        articleDB.getArticle(articleId)
-            .then((article) => {
-                if(!article){
-                    fillEmpty()
-                    return
-                }
-
-                const parsedContent = normalizeEditorData(JSON.parse(article.content))
-                setStatus(article.status)
-                setEditorReady(true)
-
-                const initialState = {
-                    title: article.title,
-                    topic: article.topic,
-                    content: parsedContent
-                }
-                setCurrentData(initialState)
-                setSavedData(initialState)
-            })
-    }, [articleId])
 
     const saveArticle = useCallback(async() => {
         if(!editorRef.current)  return
@@ -84,12 +46,12 @@ export default function WriteArticlePage() {
         }
     }, [currentData])
 
-    const publishArticle = async() => {
+    const publishArticle = useCallback(async() => {
         await articleDB.toggleArticleStatus(articleId, 'published')
         setStatus('published')
-    }
+    }, [])
 
-    const checkDirty = async() => {
+    const checkDirty = useCallback(async() => {
         if(!editorRef.current || !currentData || !savedData) return
         const currentEditorData = await editorRef.current.save()
 
@@ -107,7 +69,7 @@ export default function WriteArticlePage() {
 
         const isChanged = JSON.stringify(savedNormalized) !== JSON.stringify(currentNormalized)
         setIsDirty(isChanged)
-    }
+    }, [])
 
     useEffect(() => {
         checkDirty()

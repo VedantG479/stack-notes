@@ -107,7 +107,6 @@ class ArticleDatabaseService{
         )
     }
 
-    //UPDATE
     async updateViewCountArticle(articleId, newCount){
         return this.tablesDB.updateRow(
             config.appwriteDatabaseId, 

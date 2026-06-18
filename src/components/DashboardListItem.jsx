@@ -4,11 +4,11 @@ import { useEffect, useState } from "react"
 import articleDB from "../appwrite/article"
 import likesDB from "../appwrite/likes"
 
-const statusHandler = async (article, setArticleStatus) => {
+const statusHandler = useCallback(async (article, setArticleStatus) => {
     const newStatus = article.status == 'published' ? 'draft' : 'published'
     setArticleStatus(newStatus)
     await articleDB.toggleArticleStatus(article.$id, newStatus)
-}
+}, [article, setArticleStatus])
 
 const likeCountFetch = async (articleId) => {
     const likeRecords = await likesDB.getArticleLikeCount(articleId)
@@ -24,7 +24,7 @@ export function DashboardListItemBig({article, deleteArticleHandler}) {
     useEffect(() => {
         let count = likeCountFetch(articleId)
         setArticleLikes(count)
-    })
+    }, [])
 
     return (
         <div className="grid grid-cols-[4fr_1fr_1fr_1fr_1fr_2fr] h-[82px] border-b border-[#131722] text-[13px]">
@@ -73,7 +73,7 @@ export function DashboardListItemSmall({article, deleteArticleHandler}) {
     useEffect(() => {
         let count = likeCountFetch(articleId)
         setArticleLikes(count)
-    })
+    }, [])
 
     return (
         <div className="border-b border-[#171B26] px-5 py-5">
